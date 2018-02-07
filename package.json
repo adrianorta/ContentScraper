@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "crawler": "^1.1.2",
+    "json2csv": "^3.11.5",
+    "start-script": "^0.1.0"
+  },
+  "scripts": {
+    "start": "node ./app.js"
+  }
+}
