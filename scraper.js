@@ -33,13 +33,35 @@ function crawler (url) {
               var $ = res.$;
               //The project uses the http://shirts4mike.com/shirts.php URL as an entry point to look through the links on the page to find 8 shirts
               $('.products a').each(function() {
-                crawler(site + $(this).attr("href"));
+                pageCrawler(site + $(this).attr("href"));
               });
+          }
+          done();
+      }
+  });
+  // Queue just one URL, with default callback
+  c.queue(url);
+}
+
+function pageCrawler (url) {
+  var c = new Crawler({
+      retries: 0,
+      // This will be called for each crawled page
+      callback : function (error, res, done) {
+        //The program displays a human-friendly error (not just the original error code) when it cannot connect to http://shirts4mike.com
+          if(error && error.code === 'ENOTFOUND') {
+            console.log('There’s been a 404 error. Cannot connect to http://shirts4mike.com.');
+          }
+          else if(error){
+            errorLogger(error);
+          }else{
+              var $ = res.$;
+              //The project uses the http://shirts4mike.com/shirts.php URL as an entry point to look through the links on the page to find 8 shirts
               //Project scrapes the product title, price, image and url, and all information is correct and in the correct place
               //Column headers are in this order: Title, Price, ImageURL, URL, Time
               let info = {
                 'title': $('title').text(),
-                'price': $('price').text(),
+                'price': $('.price').text(),
                 'image': $('img').attr('src'),
                 'url': url,
                 'time': new Date().toJSON()
@@ -63,6 +85,7 @@ function crawler (url) {
   // Queue just one URL, with default callback
   c.queue(url);
 }
+
 
 function getDate() {
   let now = new Date();
